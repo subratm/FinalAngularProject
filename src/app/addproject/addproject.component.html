@@ -1,0 +1,235 @@
+<div class="container-fluid">
+  <form>
+ 
+ <div class="form group">
+  
+   <label>Project: </label>
+   <input type="text" required class="form-control" name="name" id="projectName" [(ngModel)]="project.projectName">
+    
+ </div>
+
+ <input type="checkbox" name="check" (change)="dateEditable()">
+    <label>Set Start Date and End Date</label>
+
+<div class="form group">
+  <label>StartDate:  </label>
+  <input type="date" required class="form-control" name="startDate" [(ngModel)]="project.startDate">
+
+</div>
+
+<div class="form group">
+  <label>EndDate:  </label>
+  <input type="date" required class="form-control" name="endDate" [(ngModel)]="project.endDate">
+  
+</div>
+ 
+ <div class="form group">
+  
+     <label>Priority: </label>
+     <input type="range" min=0 max=30 required class="form-control" name="priority" id="priority" [(ngModel)]="project.priority">
+ </div>
+ 
+ <div class="form group">
+    
+     <label>Manager: </label>
+     <input type="text" required class="form-control" name="manager" id="manager"  >
+   
+ </div> 
+ <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Search</button>
+<tr>
+ <button class="btn btn-primary" type="submit" (click)="createProject()">Add </button> &nbsp; &nbsp; &nbsp;
+   <button class="btn btn-primary" type="reset">Reset </button>
+</tr>
+  </form>
+  
+</div>
+
+<table class="table table-striped" [mfData]="projects" #mf="mfDataTable" [mfRowsOnPage]="500">
+  <thead>
+    <tr>
+      <th style="width: 20%">
+        <input type="text" (keyup)='search($event.target.value)' placeholder="Search">
+      </th>
+      <th style="width: 20%">
+        <label>Sort By: </label>
+      </th>
+
+      <th style="width: 20%">
+        <mfDefaultSorter by="startDate">
+          <button>Start Date</button>
+        </mfDefaultSorter>
+      </th>
+      <th style="width: 20%">
+        <mfDefaultSorter by="endDate">
+          <button>End Date</button>
+        </mfDefaultSorter>
+      </th>
+      <th style="width: 20%">
+        <mfDefaultSorter by="priority">
+          <button>priority</button>
+        </mfDefaultSorter>
+      </th>
+      <th style="width: 20%">
+        <mfDefaultSorter by="noOfTasks">
+          <button>noOfTasks</button>
+        </mfDefaultSorter>
+      </th>
+
+    </tr>
+    <tr>
+
+      <th style="width: 20%">
+        <label> Project</label>
+      </th>
+      <th style="width: 20%">
+        <label>Priority</label>
+      </th>
+      <th style="width: 20%">
+        <label>No of Tasks</label>
+      </th>
+      
+      <th style="width: 20%">
+        <label>StartDate</label>
+      </th>
+      <th style="width: 20%">
+        <label>EndDate</label>
+      </th>
+       
+    </tr>
+  </thead>
+  <tbody>
+   
+    <tr *ngFor="let projects of mf.data">
+       
+      <td>{{projects.projectName}}</td>
+      <td>{{projects.priority}}</td>    
+      <td>{{projects.noOfTasks}}</td>          
+      <td>{{projects.startDate}}</td>
+      <td>{{projects.endDate}}</td>
+      <td>
+        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal1" (click)="onEdit(project)">Update</button>
+        </td>
+      <td>
+        <button type="button"  class="btn btn-info" (click)="deleteproject(projects.projectId)">Suspend</button>
+      </td>
+     
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <td colspan="4">
+        <mfBootstrapPaginator [rowsOnPageSet]="[5,10,25]"></mfBootstrapPaginator>
+      </td>
+    </tr>
+  </tfoot>
+</table>
+
+
+
+
+<div class="modal" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+    
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Modal Heading</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      
+      <!-- Modal body -->
+      <div class="modal-body">
+          <div>
+              <input type="text" class="form-control" id="searchManager" name="search" placeholder="Search..." (keyup)='searchManager($event.target.value)'>
+            </div>
+            <select class="form-control" [(ngModel)]="select" >
+              <option value="Default">.....Choose a manager.....</option>
+              
+              <option *ngFor="let user of usersList" [ngValue]="user" id="chosenManager" name="chosenManager" >{{user.firstName}}</option>
+
+            </select>
+      </div>
+      
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+      
+    </div>
+  </div>
+
+  <div class="modal" id="myProjectModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+      
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Modal Heading</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        
+        <!-- Modal body -->
+        <div class="modal-body">
+            <div>
+                <input type="text" class="form-control" id="searchProject" name="search" placeholder="Search..." (keyup)='searchProject($event.target.value)'>
+              </div>
+              <select class="form-control" [(ngModel)]="project" >
+                <option value="Default">.....Choose Project.....</option>
+                <option *ngFor="let project of projectsList" [ngValue]="project" id="chosenProject" name="chosenProject" >{{project.projectName}}</option>
+              </select>
+        </div>
+        
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  
+
+  <div class="modal" id="myModal1" >
+  <div class="modal-content">
+    <div class="modal-header">
+        <h4 class="modal-title">Update form</h4>
+    </div>
+
+    <div class="modal-body">
+        <form>
+          <div class="form group">
+  
+            <label>Project: </label>
+            <input type="text" required class="form-control" name="name" id="projectName" [(ngModel)]="project.projectName">
+             
+          </div>       
+         <div class="form group">
+           <label>StartDate:  </label>
+           <input type="date" required class="form-control" name="startDate" [(ngModel)]="project.startDate">
+         
+         </div>
+         
+         <div class="form group">
+           <label>EndDate:  </label>
+           <input type="date" required class="form-control" name="endDate" [(ngModel)]="project.endDate">
+           
+         </div>
+          
+          <div class="form group">
+           
+              <label>Priority: </label>
+              <input type="range" min=0 max=30 required class="form-control" name="priority" id="priority" [(ngModel)]="project.priority">
+          </div>
+          
+          
+         <tr>
+          <button class="btn btn-primary" type="submit" (click)="updateProject()">Update Project </button> &nbsp; &nbsp; &nbsp;
+            <button class="btn btn-primary" type="reset">Cancel </button>
+         </tr>
+            
+            </form>
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+    
